@@ -17,9 +17,9 @@ from langchain_text_splitters import CharacterTextSplitter
 
 
 def processing_embedding(text):
-    raw_documents = TextLoader('file.txt').load()
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-    documents = text_splitter.split_documents(raw_documents)
+    documents = text_splitter.create_documents([text])
+    
     vector_store = Chroma.from_documents(documents, OllamaEmbeddings(model="nomic-embed-text"))
     retriever = vector_store.as_retriever()
 
@@ -44,3 +44,5 @@ def answer_question(retriever, llm, question):
 
     response = qa_chain.invoke(question)
     return response
+
+
