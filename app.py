@@ -3,16 +3,17 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from brain import *
 import os
+import uvicorn
 
 app = FastAPI()
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins, you can specify particular origins
+    allow_origins=["*"],  # Adjust this to the specific origins you want to allow
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.post("/suggestions/")
@@ -30,7 +31,7 @@ async def process_text(file: UploadFile = File(...)):
         result = str(response)
 
         return JSONResponse(content={"generated_text": result})
-
+    
 @app.post("/issue/")
 async def process_text(file: UploadFile = File(...)):
     if file is not None:
@@ -45,3 +46,6 @@ async def process_text(file: UploadFile = File(...)):
         result = str(response)
 
         return JSONResponse(content={"generated_text": result})
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
